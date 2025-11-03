@@ -44,23 +44,29 @@ class TreemapReport:
 
     report_name = "treemap"
 
+    def __init__(self) -> None:
+        self.ram_based = False
+
     @impl
     def generate_report(self, memtab: Memtab, filename: str) -> None:
-        """This function generates a treemap visualization of the ROM items by category, subcategory, and filename.
+        """This function generates a treemap visualization of the RAM/ROM items by category, subcategory, and filename.
         It uses the Plotly library to create the treemap and saves it as an HTML file.
         The treemap provides a visual representation of the memory usage by different categories and subcategories.
-        The function first filters the data to include only items with "region": "ROM".
+        The function first filters the data to include only items with "region": "ROM" or "RAM" based on self.ram_based.
         It then groups the data by category, subcategory, and filename or symbol, and calculates the size of each item.
 
         Args:
-            response (DataFrame): _description_
-            html (str): the filename
+            memtab (Memtab): the Memtab instance containing memory items
+            filename (str): the filename to save the report to
         """
 
         symbols_df = memtab.symbols
 
         # Filter the data to include only items with "region": "ROM"
-        rom_symbols = symbols_df[symbols_df["region"] == "Flash"]
+        if self.ram_based:
+            symbols = symbols_df[symbols_df["region"] == "RAM"]
+        else:
+            symbols = symbols_df[symbols_df["region"] == "Flash"]
 
         # Group the data by category, subcategory, and filename or symbol
         grouped_data = []
@@ -68,7 +74,7 @@ class TreemapReport:
         subcategory_sizes = {}
         file_sizes = {}
 
-        for _, item in rom_symbols.iterrows():
+        for _, item in symbols.iterrows():
             category = item.categories["0"]
             try:
                 subcategory = item.categories["1"]
@@ -104,6 +110,10 @@ class TreemapReport:
                 }
             )
 
+        if not grouped_data:
+            print("No Flash memory items found for treemap report.")
+            return
+
         # Update category and subcategory labels with sizes
         for gd_item in grouped_data:
             gd_category: str = str(gd_item["category"])
@@ -121,9 +131,9 @@ class TreemapReport:
             grouped_data,
             path=["category", "subcategory", "filename", "symbol"],
             values="size",
-            title="Tree Map of ROM Items by Category, Subcategory, Filename, and Symbol",
+            title=f"{'RAM' if self.ram_based else 'Flash'} Items by Category, Subcategory, Filename, and Symbol",
         )
-        filename = str(memtab.elf_metadata["filename"]).replace(".elf", "_treemap.html")
+        filename = str(memtab.elf_metadata["filename"]).replace(".elf", f"_{self.report_name}.html")
         # Get just the base filename without the path
         base_filename = os.path.basename(filename)
         # Prepend the current working directory

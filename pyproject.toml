@@ -1,6 +1,6 @@
 [project]
 name = "memtab-visualizers"
-version = "1.0.0"
+version = "1.0.1"
 description = "Utility to be paired with memtab to visualize the output"
 readme = "README.rst"
 requires-python = ">=3.9"
@@ -69,6 +69,7 @@ package = true
 [project.entry-points.'memtab']
 summary = "memtab_visualizers.summary_report:SummaryReport"
 excel = "memtab_visualizers.excel_report:ExcelReport"
+ramtreemap = "memtab_visualizers.ram_treemap_report:RAMTreemapReport"
 treemap = "memtab_visualizers.treemap_report:TreemapReport"
 memmap = "memtab_visualizers.memmap_report:MemmapReport"
 categorymemmap = "memtab_visualizers.category_memmap_report:CategoryMemmapReport"
