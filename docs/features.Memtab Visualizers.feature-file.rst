@@ -39,6 +39,7 @@
     :quote: “
 
     “treemap“
+    “ramtreemap“
     “memmap“
     “categorymemmap“
     “excel“

@@ -13,6 +13,7 @@ Feature: Memtab Visualizers
     Examples:
       | report          |
       | treemap         |
+      | ramtreemap      |
       | memmap          |
       | categorymemmap  |
       | excel           |

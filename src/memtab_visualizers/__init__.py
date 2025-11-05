@@ -6,6 +6,7 @@ from .category_memmap_report import CategoryMemmapReport
 from .excel_report import ExcelReport
 from .memmap_report import MemmapReport
 from .memory_profiler_report import MemoryProfilerReport
+from .ram_treemap_report import RAMTreemapReport
 from .summary_report import SummaryReport
 from .treemap_report import TreemapReport
 
@@ -16,4 +17,5 @@ __all__ = [
     "MemmapReport",
     "CategoryMemmapReport",
     "MemoryProfilerReport",
+    "RAMTreemapReport",
 ]

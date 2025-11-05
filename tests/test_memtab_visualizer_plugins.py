@@ -134,6 +134,7 @@ def _(command: Typer, report: str, elf: str, capsys: CaptureFixture) -> Generato
         "excel": "*.xlsx",
         "memoryprofiler": None,
         "treemap": "*_treemap.html",
+        "ramtreemap": "*_ramtreemap.html",
         "categorymemmap": "*_category_memmap.html",
         "memmap": "*_memmap.html",
         "summary": None,
@@ -166,18 +167,20 @@ def _(report_output: Result, report: str) -> None:
         assert stdout, "The command output is empty"
         assert stdout.strip(), "The command output is only whitespace"
 
-    if report == "excel":
-        # Look for any .xlsx file in the current directory
-        check_report_files("*.xlsx")
-    elif report == "memoryprofiler":
-        check_stdout(report_output.stdout)
-    elif report == "treemap":
-        check_report_files("*_treemap.html")
-    elif report == "categorymemmap":
-        check_report_files("*_category_memmap.html")
-    elif report == "memmap":
-        check_report_files("*_memmap.html")
-    elif report == "summary":
+    # Define report validation strategies
+    file_pattern_reports = {
+        "excel": "*.xlsx",
+        "treemap": "*_treemap.html",
+        "ramtreemap": "*_ramtreemap.html",
+        "categorymemmap": "*_category_memmap.html",
+        "memmap": "*_memmap.html",
+    }
+
+    stdout_reports = {"memoryprofiler", "summary"}
+
+    if report in file_pattern_reports:
+        check_report_files(file_pattern_reports[report])
+    elif report in stdout_reports:
         check_stdout(report_output.stdout)
     else:
         raise NotImplementedError(f"Report type '{report}' is not implemented in the test suite.")
@@ -193,6 +196,8 @@ def _(report_output: Result, report: str) -> None:
         check_stdout_for_accuracy(report_output.stdout)
     elif report == "treemap":
         check_file_contents_for_accuracy("*_treemap.html")
+    elif report == "ramtreemap":
+        check_file_contents_for_accuracy("*_ramtreemap.html")
     elif report == "categorymemmap":
         check_file_contents_for_accuracy("*_category_memmap.html")
     elif report == "memmap":
